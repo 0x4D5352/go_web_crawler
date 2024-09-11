@@ -16,6 +16,11 @@ func TestNormalizeURL(t *testing.T) {
 			expected: "blog.boot.dev/path",
 		},
 		{
+			name:     "remove scheme - checking alternate protocols",
+			inputURL: "http://blog.boot.dev/path",
+			expected: "blog.boot.dev/path",
+		},
+		{
 			name:     "remove trailing root",
 			inputURL: "blog.boot.dev/path/",
 			expected: "blog.boot.dev/path",
