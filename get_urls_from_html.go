@@ -17,7 +17,7 @@ func getURLsFromHTML(htmlBody, rawBaseURL string) ([]string, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	urls := []string{}
+	var urls []string
 	var traverseTree func(*html.Node)
 	traverseTree = func(node *html.Node) {
 		if node.Type == html.ElementNode && node.Data == "a" {

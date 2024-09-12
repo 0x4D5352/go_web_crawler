@@ -76,7 +76,7 @@ func TestGetURLsFromHTML(t *testing.T) {
 	</body>
 </html>
 `,
-			expected: []string{},
+			expected: nil,
 		},
 		{
 			name:          "handle missing body",
