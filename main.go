@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/url"
 	"os"
+	"sync"
 )
 
 func main() {
@@ -23,4 +25,12 @@ func main() {
 	for key, value := range pages {
 		fmt.Printf("%s: seen %d times.\n", key, value)
 	}
+}
+
+type config struct {
+	pages              map[string]int
+	baseURL            *url.URL
+	mu                 *sync.Mutex
+	concurrencyControl chan struct{}
+	wg                 *sync.WaitGroup
 }
