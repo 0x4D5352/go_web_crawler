@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// Pulls all URL links, both within the website and linked from other websites.
 func getURLsFromHTML(htmlBody, rawBaseURL string) ([]string, error) {
 	baseURL, err := url.Parse(rawBaseURL)
 	if err != nil {

@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// Makes a get request to the target URL, returning the HTML body as a string.
 func getHTML(rawURL string) (string, error) {
 	webpage, err := http.Get(rawURL)
 	if err != nil {
