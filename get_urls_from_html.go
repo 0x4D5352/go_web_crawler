@@ -9,12 +9,7 @@ import (
 )
 
 // Pulls all URL links, both within the website and linked from other websites.
-func getURLsFromHTML(htmlBody, rawBaseURL string) ([]string, error) {
-	baseURL, err := url.Parse(rawBaseURL)
-	if err != nil {
-		return nil, fmt.Errorf("couldn't parse base URL: %v", err)
-	}
-
+func (cfg *config) getURLsFromHTML(htmlBody string) ([]string, error) {
 	if len(htmlBody) == 0 {
 		return []string{}, errors.New("Error: HTML missing body")
 	}
@@ -35,7 +30,7 @@ func getURLsFromHTML(htmlBody, rawBaseURL string) ([]string, error) {
 						continue
 					}
 
-					resolvedURL := baseURL.ResolveReference(href)
+					resolvedURL := cfg.baseURL.ResolveReference(href)
 					urls = append(urls, resolvedURL.String())
 					break
 				}

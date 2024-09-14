@@ -19,12 +19,28 @@ func main() {
 	}
 
 	rawURL := args[0]
+	baseURL, err := url.Parse(rawURL)
+	if err != nil {
+		log.Fatal("invalid url")
+	}
 	fmt.Printf("starting crawl of: %s\n", rawURL)
-	pages := make(map[string]int)
-	crawlPage(rawURL, rawURL, pages)
-	for key, value := range pages {
+	cfg := config{
+		pages:              make(map[string]int),
+		baseURL:            baseURL,
+		mu:                 &sync.Mutex{},
+		concurrencyControl: make(chan struct{}, 1),
+		wg:                 &sync.WaitGroup{},
+	}
+	fmt.Println("------------------")
+	cfg.crawlPage(rawURL)
+	cfg.wg.Wait()
+	fmt.Println("------------------")
+	fmt.Println("crawl finished!")
+	fmt.Println("------------------")
+	for key, value := range cfg.pages {
 		fmt.Printf("%s: seen %d times.\n", key, value)
 	}
+	fmt.Println("------------------")
 }
 
 type config struct {
