@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/url"
-	"strings"
 )
 
 func (cfg *config) crawlPage(rawCurrentURL string) {
@@ -40,12 +39,8 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 	fmt.Printf("grabbing content from %s...\n", normalizedURL)
 	pageHTML, err := getHTML(rawCurrentURL)
 	if err != nil {
-		// TODO: find a better way to handle this edge case. better to not error out??
-		if strings.Contains(err.Error(), "application/xml") {
-			fmt.Println("found xml page, skipping...")
-			return
-		}
-		log.Fatal(err)
+		fmt.Printf("error getting page contents: %w", err)
+		return
 	}
 	fmt.Printf("grabbing links from %s...\n", normalizedURL)
 	pageURLs, err := cfg.getURLsFromHTML(pageHTML)
