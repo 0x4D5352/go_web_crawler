@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"strconv"
 	"sync"
 )
 
@@ -14,11 +15,27 @@ func main() {
 	if len(args) < 1 {
 		log.Fatal("no website provided")
 	}
-	if len(args) > 1 {
+	if len(args) > 3 {
 		log.Fatal("too many arguments provided")
 	}
 
 	rawURL := args[0]
+	maxConcurrency := 5
+	if len(args) > 1 {
+		userConcurrency, err := strconv.Atoi(args[1])
+		if err != nil {
+			log.Fatalf("error - unable to convert %s to integer: %w", args[1], err)
+		}
+		maxConcurrency = userConcurrency
+	}
+	maxPages := 50
+	if len(args) > 2 {
+		userPages, err := strconv.Atoi(args[2])
+		if err != nil {
+			log.Fatalf("error - unable to convert %s to integer: %w", args[2], err)
+		}
+		maxPages = userPages
+	}
 	baseURL, err := url.Parse(rawURL)
 	if err != nil {
 		log.Fatal("invalid url")
@@ -28,8 +45,9 @@ func main() {
 		pages:              make(map[string]int),
 		baseURL:            baseURL,
 		mu:                 &sync.Mutex{},
-		concurrencyControl: make(chan struct{}, 5),
+		concurrencyControl: make(chan struct{}, maxConcurrency),
 		wg:                 &sync.WaitGroup{},
+		maxPages:           maxPages,
 	}
 	fmt.Println("------------------")
 	cfg.wg.Add(1)
@@ -50,4 +68,5 @@ type config struct {
 	mu                 *sync.Mutex
 	concurrencyControl chan struct{}
 	wg                 *sync.WaitGroup
+	maxPages           int
 }

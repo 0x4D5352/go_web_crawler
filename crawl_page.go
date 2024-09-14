@@ -9,11 +9,18 @@ import (
 
 func (cfg *config) crawlPage(rawCurrentURL string) {
 	cfg.concurrencyControl <- struct{}{}
-	parsedCurrent, err := url.Parse(rawCurrentURL)
 	defer func() {
 		<-cfg.concurrencyControl
 		cfg.wg.Done()
 	}()
+	cfg.mu.Lock()
+	maxPageLimitReached := len(cfg.pages) >= cfg.maxPages
+	cfg.mu.Unlock()
+	if maxPageLimitReached {
+		fmt.Println("max page count reached! stopping crawl.")
+		return
+	}
+	parsedCurrent, err := url.Parse(rawCurrentURL)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -30,7 +37,7 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		fmt.Printf("%s already visited, skipping!\n", normalizedURL)
 		return
 	}
-	fmt.Printf("Grabbing content from %s...\n", normalizedURL)
+	fmt.Printf("grabbing content from %s...\n", normalizedURL)
 	pageHTML, err := getHTML(rawCurrentURL)
 	if err != nil {
 		// TODO: find a better way to handle this edge case. better to not error out??
@@ -40,18 +47,18 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		}
 		log.Fatal(err)
 	}
-	fmt.Printf("Grabbing links from %s...\n", normalizedURL)
+	fmt.Printf("grabbing links from %s...\n", normalizedURL)
 	pageURLs, err := cfg.getURLsFromHTML(pageHTML)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Crawling links...")
+	fmt.Println("crawling links...")
 	for _, page := range pageURLs {
 		cfg.wg.Add(1)
 		go cfg.crawlPage(page)
 
 	}
-	fmt.Printf("Finished with %s!", normalizedURL)
+	fmt.Printf("finished with %s!\n", normalizedURL)
 }
 
 func (cfg *config) addPageVisit(normalizedURL string) (isFirst bool) {
