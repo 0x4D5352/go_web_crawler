@@ -60,16 +60,3 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 	}
 	fmt.Printf("finished with %s!\n", normalizedURL)
 }
-
-func (cfg *config) addPageVisit(normalizedURL string) (isFirst bool) {
-	cfg.mu.Lock()
-	defer cfg.mu.Unlock()
-	if cfg.pages[normalizedURL] > 0 {
-		isFirst = false
-		cfg.pages[normalizedURL] += 1
-	} else {
-		isFirst = true
-		cfg.pages[normalizedURL] = 1
-	}
-	return isFirst
-}
