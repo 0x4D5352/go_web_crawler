@@ -29,7 +29,6 @@ func (cfg *config) getURLsFromHTML(htmlBody string) ([]string, error) {
 						fmt.Printf("couldn't parse href '%v': %v\n", attribute.Val, err)
 						continue
 					}
-
 					resolvedURL := cfg.baseURL.ResolveReference(href)
 					urls = append(urls, resolvedURL.String())
 					break

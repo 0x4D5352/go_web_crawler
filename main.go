@@ -28,10 +28,11 @@ func main() {
 		pages:              make(map[string]int),
 		baseURL:            baseURL,
 		mu:                 &sync.Mutex{},
-		concurrencyControl: make(chan struct{}, 1),
+		concurrencyControl: make(chan struct{}, 5),
 		wg:                 &sync.WaitGroup{},
 	}
 	fmt.Println("------------------")
+	cfg.wg.Add(1)
 	cfg.crawlPage(rawURL)
 	cfg.wg.Wait()
 	fmt.Println("------------------")
