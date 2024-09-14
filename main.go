@@ -56,8 +56,6 @@ func main() {
 	fmt.Println("------------------")
 	fmt.Println("crawl finished!")
 	fmt.Println("------------------")
-	for key, value := range cfg.pages {
-		fmt.Printf("%s: seen %d times.\n", key, value)
-	}
+	printReport(cfg.pages, baseURL.String())
 	fmt.Println("------------------")
 }
