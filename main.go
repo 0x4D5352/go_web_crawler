@@ -50,6 +50,7 @@ func main() {
 		maxPages:           maxPages,
 	}
 	fmt.Println("------------------")
+	cfg.checkRobotsTxt(rawURL)
 	cfg.wg.Add(1)
 	cfg.crawlPage(rawURL)
 	cfg.wg.Wait()
