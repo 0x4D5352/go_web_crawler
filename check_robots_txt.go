@@ -30,7 +30,11 @@ func (cfg *config) checkRobotsTxt(rawURL string) {
 		// TODO: make this smarter
 		return
 	}
-	fmt.Println(contents)
+	if string(contents) == "User-agent: *" {
+		fmt.Println("just there for show, go hog wild")
+		return
+	}
+	parseRobotsTxt(&contents)
 	source, err := url.Parse(rawURL)
 	if err != nil {
 		log.Fatal(err)
@@ -40,4 +44,9 @@ func (cfg *config) checkRobotsTxt(rawURL string) {
 	cfg.robots = RobotsTxt{
 		source: source,
 	}
+	fmt.Println("robots.txt exists, respecting their request...")
+}
+
+func parseRobotsTxt(contents *[]byte) {
+	panic("unimplemented")
 }

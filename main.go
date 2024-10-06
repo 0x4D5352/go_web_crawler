@@ -40,7 +40,6 @@ func main() {
 	if err != nil {
 		log.Fatal("invalid url")
 	}
-	fmt.Printf("starting crawl of: %s\n", rawURL)
 	cfg := config{
 		pages:              make(map[string]int),
 		baseURL:            baseURL,
@@ -49,8 +48,10 @@ func main() {
 		wg:                 &sync.WaitGroup{},
 		maxPages:           maxPages,
 	}
-	fmt.Println("------------------")
+	fmt.Println("checking for robots.txt...")
 	cfg.checkRobotsTxt(rawURL)
+	fmt.Printf("starting crawl of: %s\n", rawURL)
+	fmt.Println("------------------")
 	cfg.wg.Add(1)
 	cfg.crawlPage(rawURL)
 	cfg.wg.Wait()
