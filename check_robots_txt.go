@@ -34,6 +34,7 @@ func (cfg *config) checkRobotsTxt(rawURL string) {
 		fmt.Println("just there for show, go hog wild")
 		return
 	}
+	fmt.Println("robots.txt exists, checking their requests...")
 	parseRobotsTxt(&contents)
 	source, err := url.Parse(rawURL)
 	if err != nil {
@@ -44,7 +45,6 @@ func (cfg *config) checkRobotsTxt(rawURL string) {
 	cfg.robots = RobotsTxt{
 		source: source,
 	}
-	fmt.Println("robots.txt exists, respecting their request...")
 }
 
 func parseRobotsTxt(contents *[]byte) {
