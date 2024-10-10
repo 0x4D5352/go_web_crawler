@@ -46,11 +46,11 @@ func (cfg *config) getURLsFromHTML(htmlBody string) ([]string, error) {
 								continue
 							}
 							if found {
-								fmt.Printf("not allowed to crawl %s, as it matches %s\n", newURL, disallowed)
+								// fmt.Printf("not allowed to crawl %s, as it matches %s\n", newURL, disallowed)
 								continue
 							}
 							// else it's not in the disallowed list
-							fmt.Println("safe to crawl?")
+							// fmt.Println("safe to crawl?")
 						}
 					}
 					if len(cfg.robots.allowed) > 0 {
@@ -62,13 +62,16 @@ func (cfg *config) getURLsFromHTML(htmlBody string) ([]string, error) {
 								continue
 							}
 							if !found {
-								fmt.Printf("not allowed to crawl %s, as it does not match %s\n", newURL, allowed)
+								// fmt.Printf("not allowed to crawl %s, as it does not match %s\n", newURL, allowed)
 								continue
 							}
 							// else it's in the allowed list
+							// fmt.Println("safe to crawl!")
+							urls = append(urls, newURL)
+							break
 						}
 					}
-					fmt.Println("safe to crawl!")
+					// fmt.Println("safe to crawl!")
 					urls = append(urls, newURL)
 					break
 				}

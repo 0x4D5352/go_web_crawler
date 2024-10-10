@@ -28,7 +28,7 @@ func main() {
 		}
 		maxConcurrency = userConcurrency
 	}
-	maxPages := 50
+	maxPages := 100
 	if len(args) > 2 {
 		userPages, err := strconv.Atoi(args[2])
 		if err != nil {

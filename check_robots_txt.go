@@ -45,7 +45,7 @@ func (cfg *config) checkRobotsTxt(rawURL string) {
 		allowed:    allowed,
 		disallowed: disallowed,
 	}
-	fmt.Printf("Robots.txt:\n%+v\n", cfg.robots)
+	// fmt.Printf("Robots.txt:\n%+v\n", cfg.robots)
 	fmt.Println("robots.txt parsed!")
 }
 
