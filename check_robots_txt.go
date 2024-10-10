@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 )
@@ -35,21 +36,21 @@ func (cfg *config) checkRobotsTxt(rawURL string) {
 		return
 	}
 	fmt.Println("robots.txt exists, checking their requests...")
-	allowed, disallowed, err := parseRobotsTxt(contents)
+	allowed, disallowed, err := cfg.parseRobotsTxt(contents)
 	if err != nil {
 		log.Fatal(err)
 	}
 	// TODO: fill out the allowed and disallowed lists kind of like the getlinksfromURL function
-	// resolvedURL := cfg.baseURL.ResolveReference(href)
 	cfg.robots = RobotsTxt{
 		allowed:    allowed,
 		disallowed: disallowed,
 	}
-	fmt.Printf("robots.txt:\n%+v\n", cfg.robots)
-	os.Exit(1)
+	fmt.Printf("Robots.txt:\n%+v\n", cfg.robots)
+	os.Exit(0)
+	fmt.Println("robots.txt parsed!")
 }
 
-func parseRobotsTxt(contents []byte) ([]string, []string, error) {
+func (cfg *config) parseRobotsTxt(contents []byte) ([]string, []string, error) {
 	body := string(contents)
 	lines := strings.Split(body, "\n")
 	var allowed []string
@@ -74,11 +75,16 @@ func parseRobotsTxt(contents []byte) ([]string, []string, error) {
 		if !exists {
 			continue
 		}
+		href, err := url.Parse(path)
+		if err != nil {
+			return nil, nil, fmt.Errorf("couldn't parse href '%v': %v\n", path, err)
+		}
+		resolvedURL := cfg.baseURL.ResolveReference(href)
 		switch group {
 		case "Allow":
-			allowed = append(allowed, path)
+			allowed = append(allowed, resolvedURL.String())
 		case "Disallow":
-			disallowed = append(disallowed, path)
+			disallowed = append(disallowed, resolvedURL.String())
 		default:
 			return nil, nil, fmt.Errorf("error: unexpected key/value pair %s", line)
 		}

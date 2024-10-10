@@ -47,6 +47,7 @@ func main() {
 		concurrencyControl: make(chan struct{}, maxConcurrency),
 		wg:                 &sync.WaitGroup{},
 		maxPages:           maxPages,
+		robots:             RobotsTxt{},
 	}
 	fmt.Println("checking for robots.txt...")
 	cfg.checkRobotsTxt(rawURL)
