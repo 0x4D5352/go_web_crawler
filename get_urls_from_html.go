@@ -36,34 +36,41 @@ func (cfg *config) getURLsFromHTML(htmlBody string) ([]string, error) {
 						break
 					}
 					newURL := resolvedURL.String()
-					for _, disallowed := range cfg.robots.disallowed {
-						re := regexp.MustCompile(escapeQuestionMark(disallowed))
-						found := re.MatchString(newURL)
-						if err != nil {
-							fmt.Printf("error when comparing %s to %s\n", disallowed, newURL)
-							continue
+					fmt.Println(newURL)
+					if len(cfg.robots.disallowed) > 0 {
+						for _, disallowed := range cfg.robots.disallowed {
+							re := regexp.MustCompile(escapeQuestionMark(disallowed))
+							found := re.MatchString(newURL)
+							if err != nil {
+								fmt.Printf("error when comparing %s to %s\n", disallowed, newURL)
+								continue
+							}
+							if found {
+								fmt.Printf("not allowed to crawl %s, as it matches %s\n", newURL, disallowed)
+								continue
+							}
+							// else it's not in the disallowed list
+							fmt.Println("safe to crawl?")
 						}
-						if found {
-							fmt.Printf("not allowed to crawl %s, as it matches %s\n", newURL, disallowed)
-							continue
-						}
-						// else it's not in the disallowed list
 					}
-					for _, allowed := range cfg.robots.allowed {
-						re := regexp.MustCompile(escapeQuestionMark(allowed))
-						found := re.MatchString(newURL)
-						if err != nil {
-							fmt.Printf("error when comparing %s to %s\n", allowed, newURL)
-							continue
+					if len(cfg.robots.allowed) > 0 {
+						for _, allowed := range cfg.robots.allowed {
+							re := regexp.MustCompile(escapeQuestionMark(allowed))
+							found := re.MatchString(newURL)
+							if err != nil {
+								fmt.Printf("error when comparing %s to %s\n", allowed, newURL)
+								continue
+							}
+							if !found {
+								fmt.Printf("not allowed to crawl %s, as it does not match %s\n", newURL, allowed)
+								continue
+							}
+							// else it's in the allowed list
 						}
-						if !found {
-							fmt.Printf("not allowed to crawl %s, as it does not match %s\n", newURL, allowed)
-							continue
-						}
-						// else it's in the allowed list
-						urls = append(urls, newURL)
-						break
 					}
+					fmt.Println("safe to crawl!")
+					urls = append(urls, newURL)
+					break
 				}
 			}
 		}

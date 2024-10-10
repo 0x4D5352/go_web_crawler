@@ -57,7 +57,6 @@ func main() {
 		for _, line := range cfg.robots.sitemap {
 			fmt.Printf("found URL at %s\n", line)
 		}
-		os.Exit(0)
 	}
 	fmt.Printf("starting crawl of: %s\n", rawURL)
 	fmt.Println("------------------")

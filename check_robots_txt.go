@@ -45,7 +45,7 @@ func (cfg *config) checkRobotsTxt(rawURL string) {
 		allowed:    allowed,
 		disallowed: disallowed,
 	}
-	// fmt.Printf("Robots.txt:\n%+v\n", cfg.robots)
+	fmt.Printf("Robots.txt:\n%+v\n", cfg.robots)
 	fmt.Println("robots.txt parsed!")
 }
 
@@ -61,7 +61,7 @@ func (cfg *config) parseRobotsTxt(contents []byte) ([]string, []string, error) {
 		cfg.robots.sitemap = parseSitemap(sitemap)
 	}
 	for _, line := range lines {
-		fmt.Println(line)
+		// fmt.Println(line)
 		if len(line) == 0 {
 			continue
 		}
@@ -90,6 +90,8 @@ func (cfg *config) parseRobotsTxt(contents []byte) ([]string, []string, error) {
 			allowed = append(allowed, resolvedURL.String())
 		case "Disallow":
 			disallowed = append(disallowed, resolvedURL.String())
+		case "Sitemap":
+			continue
 		default:
 			return nil, nil, fmt.Errorf("error: unexpected key/value pair %s", line)
 		}
@@ -101,6 +103,5 @@ func (cfg *config) parseRobotsTxt(contents []byte) ([]string, []string, error) {
 }
 
 func parseSitemap(sitemap string) []string {
-	panic("unimplemented")
 	return nil
 }
