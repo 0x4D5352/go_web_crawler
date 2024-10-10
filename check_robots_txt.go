@@ -6,13 +6,13 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 )
 
 type RobotsTxt struct {
 	allowed    []string
 	disallowed []string
+	sitemap    []string
 }
 
 func (cfg *config) checkRobotsTxt(rawURL string) {
@@ -45,8 +45,7 @@ func (cfg *config) checkRobotsTxt(rawURL string) {
 		allowed:    allowed,
 		disallowed: disallowed,
 	}
-	fmt.Printf("Robots.txt:\n%+v\n", cfg.robots)
-	os.Exit(0)
+	// fmt.Printf("Robots.txt:\n%+v\n", cfg.robots)
 	fmt.Println("robots.txt parsed!")
 }
 
@@ -56,7 +55,13 @@ func (cfg *config) parseRobotsTxt(contents []byte) ([]string, []string, error) {
 	var allowed []string
 	var disallowed []string
 	var isOurUserAgent bool
+	if strings.Contains(lines[len(lines)-2], "Sitemap:") {
+		fmt.Println("sitemap found! just use that.")
+		_, sitemap, _ := strings.Cut(lines[len(lines)-2], ": ")
+		cfg.robots.sitemap = parseSitemap(sitemap)
+	}
 	for _, line := range lines {
+		fmt.Println(line)
 		if len(line) == 0 {
 			continue
 		}
@@ -93,4 +98,9 @@ func (cfg *config) parseRobotsTxt(contents []byte) ([]string, []string, error) {
 		return nil, nil, fmt.Errorf("error: no valid groups in %s", lines)
 	}
 	return allowed, disallowed, nil
+}
+
+func parseSitemap(sitemap string) []string {
+	panic("unimplemented")
+	return nil
 }

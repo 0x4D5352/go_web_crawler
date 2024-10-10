@@ -51,6 +51,14 @@ func main() {
 	}
 	fmt.Println("checking for robots.txt...")
 	cfg.checkRobotsTxt(rawURL)
+	if cfg.robots.sitemap != nil {
+		// TODO: implement alternate logic to respect
+		fmt.Println("Sitemap found, results:")
+		for _, line := range cfg.robots.sitemap {
+			fmt.Printf("found URL at %s\n", line)
+		}
+		os.Exit(0)
+	}
 	fmt.Printf("starting crawl of: %s\n", rawURL)
 	fmt.Println("------------------")
 	cfg.wg.Add(1)
