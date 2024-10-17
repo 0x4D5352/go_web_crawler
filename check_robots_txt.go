@@ -58,6 +58,8 @@ func (cfg *config) parseRobotsTxt(contents []byte) ([]string, []string, error) {
 	if strings.Contains(lines[len(lines)-2], "Sitemap:") {
 		fmt.Println("sitemap found! just use that.")
 		_, sitemap, _ := strings.Cut(lines[len(lines)-2], ": ")
+		// NOTE: do i want to hold the sitemap, or do i want to parse the sitemap and fill out allowed/disallowed?
+		// Are they going to exist separately?? or what??? i need to read up more on sitemaps and robots.txt...
 		cfg.robots.sitemap = parseSitemap(sitemap)
 	}
 	for _, line := range lines {
